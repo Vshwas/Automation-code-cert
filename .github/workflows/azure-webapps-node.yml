@@ -1,0 +1,29 @@
+name: AKS Node-by-Node Upgrade Syntax Test
+
+on:
+  push:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  bash-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Fix Windows CRLF line endings
+        run: |
+          sed -i 's/\r$//' aks-node-by-node-test.sh
+
+      - name: Bash syntax validation
+        run: |
+          bash -n aks-node-by-node-test.sh
+
+      - name: Execute node-by-node upgrade script (simulation)
+        run: |
+          bash aks-node-by-node-test.sh
