@@ -5,25 +5,25 @@ on:
     branches: [ "main" ]
   workflow_dispatch:
 
-permissions:
-  contents: read
-
 jobs:
   bash-test:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Fix Windows CRLF line endings
+      - name: Show repo files (debug)
         run: |
-          sed -i 's/\r$//' aks-node-by-node-test.sh
+          ls -R
 
-      - name: Bash syntax validation
+      - name: Fix CRLF
         run: |
-          bash -n aks-node-by-node-test.sh
+          sed -i 's/\r$//' scripts/aks-node-by-node-test.sh
 
-      - name: Execute node-by-node upgrade script (simulation)
+      - name: Bash syntax check
         run: |
-          bash aks-node-by-node-test.sh
+          bash -n scripts/aks-node-by-node-test.sh
+
+      - name: Run script
+        run: |
+          bash scripts/aks-node-by-node-test.sh
