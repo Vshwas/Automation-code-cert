@@ -1,29 +1,29 @@
-name: AKS Node-by-Node Upgrade Syntax Test
+name: AKS Node-by-Node Script Test
 
 on:
+  workflow_dispatch:
   push:
     branches: [ "main" ]
-  workflow_dispatch:
 
 jobs:
   bash-test:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-      - name: Show repo files (debug)
-        run: |
-          ls -R
+      - name: Show files (one-time debug)
+        run: ls -la
 
-      - name: Fix CRLF
+      - name: Fix CRLF line endings (safe)
         run: |
-          sed -i 's/\r$//' scripts/aks-node-by-node-test.sh
+          sed -i 's/\r$//' aks-node-by-node-test.sh || true
 
       - name: Bash syntax check
         run: |
-          bash -n scripts/aks-node-by-node-test.sh
+          bash -n aks-node-by-node-test.sh
 
-      - name: Run script
+      - name: Run node-by-node script
         run: |
-          bash scripts/aks-node-by-node-test.sh
+          bash aks-node-by-node-test.sh
