@@ -1,0 +1,30 @@
+trigger: none   # No CI trigger (run via schedule or manual)
+
+schedules:
+- cron: "*/15 3-14 * * 1-5"
+  displayName: "AKS Start/Stop Check (IST Business Hours)"
+  branches:
+    include:
+    - main
+  always: true
+
+pool:
+  vmImage: 'windows-latest'
+
+variables:
+  rgName: "YOUR_RESOURCE_GROUP"
+  aksClusterName: "YOUR_AKS_NAME"
+  subscriptionId: "YOUR_SUBSCRIPTION_ID"
+
+steps:
+- task: AzurePowerShell@5
+  displayName: "Start / Stop AKS based on IST Time"
+  inputs:
+    azureSubscription: "YOUR_SERVICE_CONNECTION_NAME"
+    ScriptType: "FilePath"
+    ScriptPath: "$(System.DefaultWorkingDirectory)/aks-start-stop.ps1"
+    ScriptArguments: >
+      -rgName $(rgName)
+      -aksClusterName $(aksClusterName)
+      -subscriptionId $(subscriptionId)
+    azurePowerShellVersion: "LatestVersion"
